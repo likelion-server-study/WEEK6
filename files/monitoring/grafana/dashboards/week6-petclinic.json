@@ -113,7 +113,7 @@
         {
           "refId": "A",
           "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "100 * (sum(rate(http_server_requests_seconds_count{job=\"petclinic\", uri!=\"/actuator/prometheus\", status=~\"5..\"}[1m])) / clamp_min(sum(rate(http_server_requests_seconds_count{job=\"petclinic\", uri!=\"/actuator/prometheus\"}[1m])), 0.001))",
+          "expr": "100 * (sum(rate(http_server_requests_seconds_count{job=\"petclinic\", uri!=\"/actuator/prometheus\", status=~\"5..\"}[1m])) or vector(0)) / clamp_min(sum(rate(http_server_requests_seconds_count{job=\"petclinic\", uri!=\"/actuator/prometheus\"}[1m])), 0.001)",
           "legendFormat": "5xx 오류율"
         }
       ],

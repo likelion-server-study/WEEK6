@@ -74,7 +74,7 @@ groups:
         labels:
           severity: warning
         isPaused: false
-        noDataState: NoData
+        noDataState: OK
         execErrState: Alerting
         data:
           - refId: A
@@ -85,7 +85,9 @@ groups:
             model:
               refId: A
               editorMode: code
-              expr: 100 * (sum(rate(http_server_requests_seconds_count{job="petclinic", uri!="/actuator/prometheus", status=~"5.."}[1m])) / clamp_min(sum(rate(http_server_requests_seconds_count{job="petclinic", uri!="/actuator/prometheus"}[1m])), 0.001))
+              # `or vector(0)`이 없으면 5xx가 한 건도 없을 때 결과가 아예 비어
+              # NoData 상태가 되고, 그것만으로 경고가 울린다.
+              expr: 100 * (sum(rate(http_server_requests_seconds_count{job="petclinic", uri!="/actuator/prometheus", status=~"5.."}[1m])) or vector(0)) / clamp_min(sum(rate(http_server_requests_seconds_count{job="petclinic", uri!="/actuator/prometheus"}[1m])), 0.001)
               instant: false
               range: true
               intervalMs: 1000
